@@ -70,10 +70,10 @@ import os
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="https://api.together.xyz/v1",
-    api_key=os.environ.get("TOGETHER_API_KEY"),
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ.get("OPENROUTER_API_KEY"),
 )
-# If you want to use OpenRouter, specify `base_url="https://openrouter.ai/api/v1"` and `api_key=os.environ.get("OPENROUTER_API_KEY")` and update `model=deepcogito/cogito-v2.1-671b` in `show_generation`.
+# If you want to use TogetherAI, specify `base_url="https://api.together.xyz/v1"` and `api_key=os.environ.get("TOGETHER_API_KEY")` and update `model=deepcogito/cogito-v2-1-671b` in `show_generation`.
 
 def show_generation(prompt, system=None, enable_thinking=True):
     global client
@@ -85,14 +85,20 @@ def show_generation(prompt, system=None, enable_thinking=True):
     else:
         messages = [{"role": "user", "content": prompt}]
     response = client.chat.completions.create(
-        model="deepcogito/cogito-v2-1-671b",
+        model="deepcogito/cogito-v2.1-671b",
         messages=messages,
-        extra_body={"chat_template_kwargs": {"enable_thinking": enable_thinking}},
+        extra_body={"reasoning": {"enabled": enable_thinking}},
         max_tokens=8192,
         temperature=0.6,
         top_p=0.95,
-    )
-    print(response.choices[0].message.content)
+    ).choices[0].message
+    if response.reasoning is not None:
+        print("<think>")
+        print(response.reasoning)
+        print("</think>")
+        print(response.content)
+    else:
+        print(response.content)
 ```
 
 > The recommended temperature for Cogito v2 is `temperature = 0.6`.
