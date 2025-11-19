@@ -53,7 +53,7 @@ For more eval results, show cases, and technical details, please visit our [tech
 
 | Model            | Hugging Face     | Inference        |
 |------------------|------------------|------------------|
-| Cogito v2.1 671B | [BF16](https://huggingface.co/deepcogito/cogito-671b-v2.1), [FP8](https://huggingface.co/deepcogito/cogito-671b-v2.1-FP8) |  OpenRouter, [TogetherAI](https://api.together.ai/models/deepcogito/cogito-v2-1-671b)|
+| Cogito v2.1 671B | [BF16](https://huggingface.co/deepcogito/cogito-671b-v2.1), [FP8](https://huggingface.co/deepcogito/cogito-671b-v2.1-FP8) |  [OpenRouter](https://openrouter.ai/deepcogito/cogito-v2.1-671b), [TogetherAI](https://api.together.ai/models/deepcogito/cogito-v2-1-671b)|
 | Cogito v2 671B   | [BF16](https://huggingface.co/deepcogito/cogito-v2-preview-deepseek-671B-MoE), [FP8](https://huggingface.co/deepcogito/cogito-v2-preview-deepseek-671B-MoE-FP8) | [OpenRouter](https://openrouter.ai/deepcogito/cogito-v2-preview-deepseek-671b), [TogetherAI](https://api.together.ai/models/deepcogito/cogito-v2-preview-deepseek-671b) |
 | Cogito v2 405B   | [BF16](https://huggingface.co/deepcogito/cogito-v2-preview-llama-405B) | [OpenRouter](https://openrouter.ai/deepcogito/cogito-v2-preview-llama-405b), [TogetherAI](https://api.together.ai/models/deepcogito/cogito-v2-preview-llama-405B) |
 | Cogito v2 109B   | [BF16](https://huggingface.co/deepcogito/cogito-v2-preview-llama-109B-MoE) | [OpenRouter](https://openrouter.ai/deepcogito/cogito-v2-preview-llama-109b-moe), [TogetherAI](https://api.together.ai/models/deepcogito/cogito-v2-preview-llama-109B-MoE) |
@@ -70,10 +70,10 @@ import os
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.environ.get("OPENROUTER_API_KEY"),
+    base_url="https://api.together.xyz/v1",
+    api_key=os.environ.get("TOGETHER_API_KEY"),
 )
-# If you want to use TogetherAI, specify `base_url="https://api.together.xyz/v1"` and `api_key=os.environ.get("TOGETHER_API_KEY")`.
+# If you want to use OpenRouter, specify `base_url="https://openrouter.ai/api/v1"` and `api_key=os.environ.get("OPENROUTER_API_KEY")` and update `model=deepcogito/cogito-v2.1-671b` in `show_generation`.
 
 def show_generation(prompt, system=None, enable_thinking=True):
     global client
@@ -85,7 +85,7 @@ def show_generation(prompt, system=None, enable_thinking=True):
     else:
         messages = [{"role": "user", "content": prompt}]
     response = client.chat.completions.create(
-        model="deepcogito/cogito-v2-preview-deepseek-671b",
+        model="deepcogito/cogito-v2-1-671b",
         messages=messages,
         extra_body={"chat_template_kwargs": {"enable_thinking": enable_thinking}},
         max_tokens=8192,
